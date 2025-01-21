@@ -2,7 +2,7 @@ import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
 
 export default function Navbar() {
 	return (
-		<nav className="flex items-center justify-between bg-gray-100 shadow-md px-6 py-3">
+		<nav className="flex items-center justify-between bg-gray-100  px-6 py-3">
 			{/* Search Input */}
 			<div className="flex items-center bg-white rounded-lg px-4 py-2 w-1/2">
 				<FaSearch className="text-white mr-2" />
