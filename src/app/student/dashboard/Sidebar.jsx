@@ -8,16 +8,23 @@ import {
 	FaTicketAlt,
 	FaUser,
 } from "react-icons/fa";
+import Image from "next/image";
 
 export default function Sidebar() {
 	return (
 		<aside className="hidden lg:block w-64 bg-[#002349] text-white h-screen">
 			<div className="p-6">
-				{/* Logo */}
-				<div className="flex items-center mb-10">
-					<div className="p-2 rounded-full">
-						<img src="/images/camsole-logo.png" alt="Logo" className="w-6 h-6" />{" "}
-						{/* Replace with actual logo path */}
+                {/* Logo */}
+                <div className="flex items-center mb-10">
+                    <div className="p-2 rounded-full">
+                        <Image
+                            src="/images/camsole-logo.png"
+                            alt="Logo"
+                            width={44}
+                            height={44}
+                            
+                        />{" "}
+                        {/* Replace with actual logo path */}
 					</div>
 					<h1 className="ml-3 text-xl font-bold">CAMSOLE</h1>
 				</div>
