@@ -1,7 +1,7 @@
-import "../../globals.css";
-import Sidebar from "../dashboard/Sidebar";
-import Navbar from "../dashboard/Navbar";
-import MobileBottomNav from "../dashboard/MobileBottomNav";
+import "../globals.css";
+import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
+import MobileBottomNav from "./MobileBottomNav";
 
 export default function RootLayout({ children }) {
 	return (
