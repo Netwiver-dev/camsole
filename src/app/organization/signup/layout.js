@@ -10,9 +10,9 @@ export default function RootLayout({ children }) {
 					<div className="w-full min-h-screen bg-white shadow-md overflow-hidden md:flex">
 						{/* Left Section*/}
                         <LeftSection
-							imageSrc="/images/student_image/login.png"
+							imageSrc="/images/organisation_image/signup.png"
 							imageAlt="School Illustration"
-							type="Login"
+							type="Signup"
 						/>
 						{/* Right Section */}
 						<RightSection>{children}</RightSection>

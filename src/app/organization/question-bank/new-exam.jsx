@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-
+import Link from "next/link";
 const NewExam = () => {
 	const newExams = [
 		{
@@ -91,7 +91,7 @@ const NewExam = () => {
 						<p>⏱ {exam.duration}</p>
 					</div>
 					<button className="mt-4 w-full py-2 text-sm font-medium bg-orange-500 text-white rounded-md hover:bg-orange-600">
-						<Link href="/question">View Questions</Link>
+						<Link href="/question-bank/question">View Questions</Link>
 					</button>
 				</div>
 			))}

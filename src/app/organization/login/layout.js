@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
 					<div className="w-full min-h-screen bg-white shadow-md overflow-hidden md:flex">
 						{/* Left Section*/}
                         <LeftSection
-							imageSrc="/images/student_image/login.png"
+							imageSrc="/images/organisation_image/login.png"
 							imageAlt="School Illustration"
 							type="Login"
 						/>

@@ -3,6 +3,7 @@ import Image from "next/image";
 export default function LeftSection({
 	imageSrc,
 	imageAlt,
+	type
 }) {
 	return (
 		<div className="hidden md:flex flex-col items-start justify-center bg-gradient-to-b from-[#002349] to-[#0054AF] text-white w-1/2 p-12">
@@ -15,7 +16,7 @@ export default function LeftSection({
             </h1>
 
 			{/* Subheading */}
-			<p className="mb-6 text-base font-medium opacity-70">Login to access</p>
+			<p className="mb-6 text-base font-medium opacity-70">{type} to access</p>
 
 			{/* Illustration */}
 			<div className="relative">
