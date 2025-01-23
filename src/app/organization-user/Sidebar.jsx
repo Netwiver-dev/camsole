@@ -30,7 +30,7 @@ export default function Sidebar() {
 			icon: <FaAward className="text-lg" />, // Award Icon
 		},
 		{
-			href: "/organization-user/question-bank",
+			href: "/organization-user/result",
 			label: "Result",
 			icon: <FaCheckSquare className="text-lg" />, // Question Circle Icon
 		},
