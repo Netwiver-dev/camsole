@@ -20,7 +20,7 @@ export default function Sidebar() {
 			icon: <FaHome className="text-lg" />, // Home Icon
 		},
 		{
-			href: "/organization-user/examination-setup",
+			href: "/organization-user/exam",
 			label: "Exam",
 			icon: <FaTasks className="text-lg" />, // Tasks Icon
 		},
