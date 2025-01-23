@@ -90,7 +90,7 @@ const NewExam = () => {
 						<p>📅 {exam.date}</p>
 						<p>⏱ {exam.duration}</p>
 					</div>
-					<Link href="/organization/question-bank/question">
+					<Link href="#">
 						<button className="mt-4 w-full py-2 text-sm font-medium bg-orange-500 text-white rounded-md hover:bg-orange-600">
 							View Questions
 						</button>
