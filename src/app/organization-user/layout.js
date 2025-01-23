@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
 	const pathname = usePathname(); // Get the current route path
 
 	// Define routes that should bypass the dashboard layout
-	const excludedRoutes = ["/organization/login", "/organization/signup"];
+	const excludedRoutes = ["/organization-user/login", "/organization-user/signup"];
 
 	// Check if the current route is an excluded route
 	const isExcludedRoute = excludedRoutes.includes(pathname);
