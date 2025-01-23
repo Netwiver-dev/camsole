@@ -5,14 +5,18 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import MobileBottomNav from "./MobileBottomNav";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function RootLayout({ children }) {
-	const pathname = usePathname(); // Get the current route path
 	const [isLoading, setIsLoading] = useState(true); // Loading state for children
 
-	// Check if the route includes "login"
-	const isLoginRoute = pathname === "/student/login";
+	const pathname = usePathname(); // Get the current route path
+
+	// Define routes that should bypass the dashboard layout
+	const excludedRoutes = ["/organization/login", "/organization/signup"];
+
+	// Check if the current route is an excluded route
+	const isExcludedRoute = excludedRoutes.includes(pathname);
 
 	// Simulate content loading with useEffect
 	useEffect(() => {
@@ -23,6 +27,14 @@ export default function RootLayout({ children }) {
 		return () => clearTimeout(timer); // Cleanup timer
 	}, [pathname]);
 
+	// If the route matches an excluded route, render only the `children`
+	if (isExcludedRoute) {
+		return (
+			<html lang="en">
+				<body className="bg-gray-100">{children}</body>
+			</html>
+		);
+	}
 	// Skeleton Loader Component
 	const SkeletonLoader = () => (
 		<div className="animate-pulse space-y-4">
@@ -32,32 +44,27 @@ export default function RootLayout({ children }) {
 		</div>
 	);
 
+	// For other routes, render the dashboard layout
 	return (
 		<html lang="en">
 			<body className="bg-gray-100">
-				{/* If it's the login route, skip the layout */}
-				{isLoginRoute ? (
-					children // Render the login page immediately
-				) : (
-					<div className="flex h-screen overflow-hidden">
-						{/* Sidebar (Hidden on Mobile) */}
-						<Sidebar />
+				<div className="flex h-screen overflow-hidden">
+					{/* Sidebar (Hidden on Mobile) */}
+					<Sidebar />
 
-						{/* Main Content Area */}
-						<div className="flex-1 flex flex-col h-full">
-							{/* Navbar */}
-							<Navbar />
-
-							{/* Dynamic Content */}
-							<main className="flex-1 overflow-y-auto">
-								{isLoading ? <SkeletonLoader /> : children}
-							</main>
-						</div>
-
-						{/* Mobile Bottom Navigation */}
-						<MobileBottomNav />
+					{/* Main Content Area */}
+					<div className="flex-1 flex flex-col h-full">
+						{/* Navbar */}
+						<Navbar />
+						{/* Dynamic Content */}
+						<main className="flex-1 overflow-y-auto">
+							{isLoading ? <SkeletonLoader /> : children}
+						</main>{" "}
 					</div>
-				)}
+
+					{/* Mobile Bottom Navigation */}
+					<MobileBottomNav />
+				</div>
 			</body>
 		</html>
 	);

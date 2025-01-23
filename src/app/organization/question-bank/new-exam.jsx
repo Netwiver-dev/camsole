@@ -90,9 +90,11 @@ const NewExam = () => {
 						<p>📅 {exam.date}</p>
 						<p>⏱ {exam.duration}</p>
 					</div>
-					<button className="mt-4 w-full py-2 text-sm font-medium bg-orange-500 text-white rounded-md hover:bg-orange-600">
-						<Link href="/question-bank/question">View Questions</Link>
-					</button>
+					<Link href="/organization/question-bank/question">
+						<button className="mt-4 w-full py-2 text-sm font-medium bg-orange-500 text-white rounded-md hover:bg-orange-600">
+							View Questions
+						</button>
+					</Link>
 				</div>
 			))}
 		</div>
