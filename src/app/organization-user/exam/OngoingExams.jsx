@@ -35,7 +35,7 @@ export default function OngoingExams() {
 
 	// Navigate to the TakeExamPage with router.push
 	const handleTakeExam = () => {
-		router.push("/organization-user/examination-setup/take-exam"); // Adjust the path as needed
+		router.push("/organization-user/exam/take-exam"); // Adjust the path as needed
 	};
 
 	return (
