@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Camsole",
   description: "School management website",
-  icons: {
-    icon: "/images/camsole-logo.png",
-  },
+  // icons: {
+  //   icon: "/images/camsole-logo.png",
+  // },
 };
 
 export default function RootLayout({ children }) {

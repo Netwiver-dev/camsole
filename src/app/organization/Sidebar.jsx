@@ -43,12 +43,12 @@ export default function Sidebar() {
 				<div className="flex items-center mb-10">
 					<Link href="/" className="flex items-center">
 						<div className="p-2 rounded-full">
-							<Image
+							{/* <Image
 								src="/images/camsole-logo.png"
 								alt="Logo"
 								width={44}
 								height={44}
-							/>
+							/> */}
 						</div>
 						<h1 className="ml-3 text-xl font-bold">CAMSOLE</h1>
 					</Link>
