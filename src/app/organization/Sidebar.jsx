@@ -40,19 +40,19 @@ export default function Sidebar() {
 		<aside className="hidden lg:block w-64 bg-[#002349] text-white h-screen">
 			<div className="p-6">
 				{/* Logo */}
-				<div className="flex items-center mb-10">
+				{/* <div className="flex items-center mb-10">
 					<Link href="/" className="flex items-center">
 						<div className="p-2 rounded-full">
-							{/* <Image
+							<Image
 								src="/images/camsole-logo.png"
 								alt="Logo"
 								width={44}
 								height={44}
-							/> */}
+							/>
 						</div>
 						<h1 className="ml-3 text-xl font-bold">CAMSOLE</h1>
 					</Link>
-				</div>
+				</div> */}
 
 				{/* Navigation Menu */}
 				<ul className="space-y-6">
