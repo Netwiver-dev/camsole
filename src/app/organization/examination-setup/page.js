@@ -1,277 +1,260 @@
 "use client";
-import {
-	FaWhatsapp,
-	FaTelegram,
-	FaLinkedin,
-	FaFacebook,
-	FaInstagram,
-} from "react-icons/fa";
-import { FiCopy } from "react-icons/fi";
-import { useState } from "react";
+import React, { useState } from "react";
 
-export default function QuestionDetails() {
-	const [currentStep, setCurrentStep] = useState(1); // Step tracker: 1 = Question Details, 2 = Set Question, 3 = Congratulations
+export default function ExaminationSetup() {
+	const [currentStep, setCurrentStep] = useState(1);
+	const [examMeta, setExamMeta] = useState({
+		name: "",
+		description: "",
+		date: "",
+		time: "",
+	});
+	const [questions, setQuestions] = useState([]);
 
-	// Step Handlers
-	const goToNextStep = () => setCurrentStep((prev) => prev + 1);
+	const handleMetaNext = (meta) => {
+		setExamMeta(meta);
+		setCurrentStep(2);
+	};
+	const handleAddQuestion = (q) => {
+		setQuestions((prev) => [...prev, q]);
+	};
+	const goBackMeta = () => setCurrentStep(1);
+	const handleFinish = async () => {
+		const examData = {
+			title: examMeta.name,
+			description: examMeta.description,
+			date: new Date(`${examMeta.date}T${examMeta.time}`),
+			duration: examMeta.time,
+			questions,
+		};
+		const res = await fetch("/api/exams", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(examData),
+		});
+		if (res.ok) setCurrentStep(3);
+		else alert("Failed to create exam");
+	};
 
 	return (
-		<div className="min-h-screen bg-gray-100 flex items-center justify-center">
-			<div className=" rounded-lg w-full max-w-4xl">
-				{currentStep === 1 && <QuestionDetailsForm onNext={goToNextStep} />}
-				{currentStep === 2 && <SetQuestionForm onNext={goToNextStep} />}
-				{currentStep === 3 && <Congratulations />}
-			</div>
+		<div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+			<div className="bg-white rounded-lg shadow-lg w-full max-w-3xl">
+				{" "}
+				{currentStep === 1 && (
+					<QuestionDetailsForm onNext={handleMetaNext} data={examMeta} />
+				)}{" "}
+				{currentStep === 2 && (
+					<SetQuestionForm
+						onAdd={handleAddQuestion}
+						onFinish={handleFinish}
+						goBack={goBackMeta}
+					/>
+				)}{" "}
+				{currentStep === 3 && <Congratulations count={questions.length} />}{" "}
+			</div>{" "}
 		</div>
 	);
 }
 
-// Step 1: Question Details Form
-function QuestionDetailsForm({ onNext }) {
+function QuestionDetailsForm({ onNext, data }) {
+	const [name, setName] = useState(data.name);
+	const [description, setDescription] = useState(data.description);
+	const [date, setDate] = useState(data.date);
+	const [time, setTime] = useState(data.time || "01:00");
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		onNext({ name, description, date, time });
+	};
+
 	return (
-		<>
-			<h2 className="text-lg font-semibold text-gray-800 mb-6">
-				Question Details
-			</h2>
-			<form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<div>
-					<label className="block text-sm font-medium text-gray-700">
-						Exam Name
-					</label>
-					<input
-						type="text"
-						className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">
-						Description
-					</label>
-					<input
-						type="text"
-						className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">
-						Date
-					</label>
+		<form onSubmit={handleSubmit} className="p-6 space-y-4">
+			<h2 className="text-xl font-semibold"> Exam Details </h2>{" "}
+			<div>
+				<label className="block text-sm"> Exam Name </label>{" "}
+				<input
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+					className="w-full p-2 border rounded"
+					required
+				/>
+			</div>{" "}
+			<div>
+				<label className="block text-sm"> Description </label>{" "}
+				<input
+					value={description}
+					onChange={(e) => setDescription(e.target.value)}
+					className="w-full p-2 border rounded"
+				/>
+			</div>{" "}
+			<div className="flex gap-4">
+				<div className="flex-1">
+					<label className="block text-sm"> Date </label>{" "}
 					<input
 						type="date"
-						className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+						value={date}
+						onChange={(e) => setDate(e.target.value)}
+						className="w-full p-2 border rounded"
+						required
 					/>
-				</div>
-				<div>
-					<label className="block text-sm font-medium text-gray-700">
-						Time
-					</label>
-					<input
-						type="time"
-						className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-					/>
-				</div>
-			</form>
+				</div>{" "}
+				<div className="flex-1">
+					<label className="block text-sm"> Duration </label>{" "}
+					<select
+						value={time}
+						onChange={(e) => setTime(e.target.value)}
+						className="w-full p-2 border rounded"
+						required
+					>
+						<option value="00:30"> 30 Minutes </option>{" "}
+						<option value="01:00"> 1 Hour </option>{" "}
+						<option value="01:30"> 1.5 Hours </option>{" "}
+						<option value="02:00"> 2 Hours </option>{" "}
+						<option value="03:00"> 3 Hours </option>{" "}
+					</select>{" "}
+				</div>{" "}
+			</div>{" "}
 			<button
-				onClick={onNext}
-				className="w-full mt-6 py-3 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600"
+				type="submit"
+				className="mt-4 w-full py-2 bg-orange-500 text-white rounded"
 			>
-				Proceed
-			</button>
-		</>
+				{" "}
+				Proceed{" "}
+			</button>{" "}
+		</form>
 	);
 }
 
-// Step 2: Set Question Form
+function SetQuestionForm({ onAdd, onFinish, goBack }) {
+	const [text, setText] = useState("");
+	const [questionImage, setQuestionImage] = useState(null);
+	const [options, setOptions] = useState(
+		Array.from({ length: 4 }, () => ({ text: "", image: null }))
+	);
+	const [correctIndex, setCorrectIndex] = useState(0);
 
-function SetQuestionForm({ onNext }) {
+	const handleQuestionImageChange = (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => setQuestionImage(reader.result);
+			reader.readAsDataURL(file);
+		}
+	};
+
+	const handleOptionImageChange = (e, idx) => {
+		const file = e.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const newOpts = [...options];
+				newOpts[idx].image = reader.result;
+				setOptions(newOpts);
+			};
+			reader.readAsDataURL(file);
+		}
+	};
+
+	const handleAdd = () => {
+		if (!text.trim()) return alert("Question text required");
+		onAdd({ text, image: questionImage, options, correctAnswer: correctIndex });
+		// reset
+		setText("");
+		setQuestionImage(null);
+		setOptions(Array.from({ length: 4 }, () => ({ text: "", image: null })));
+		setCorrectIndex(0);
+	};
+
 	return (
-		<div className=" bg-gray-100 flex items-center justify-center">
-			<div className=" p-6  w-full max-w-5xl">
-				{/* Header */}
-				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-lg font-semibold text-[#002349]">History</h2>
-					<div className="flex gap-4">
-						<button className="px-4 py-2 bg-gray-200 text-sm font-medium rounded-md hover:bg-gray-300">
-							Preview
-						</button>
-						<button className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-md hover:bg-orange-600">
-							Upload
-						</button>
-					</div>
+		<div className="p-6 space-y-4">
+			<button onClick={goBack} className="text-blue-500 hover:underline">
+				{" "}
+				& larr; Back{" "}
+			</button>{" "}
+			<h2 className="text-xl font-semibold"> Add Question </h2>{" "}
+			<div>
+				<label className="block text-sm"> Question Text </label>{" "}
+				<textarea
+					value={text}
+					onChange={(e) => setText(e.target.value)}
+					className="w-full p-2 border rounded"
+					placeholder="Enter question"
+					required
+				/>
+			</div>{" "}
+			<div>
+				<label className="block text-sm"> Question Image(optional) </label>{" "}
+				<input
+					type="file"
+					accept="image/*"
+					onChange={handleQuestionImageChange}
+				/>{" "}
+				{questionImage && (
+					<img src={questionImage} alt="Preview" className="mt-2 max-h-40" />
+				)}{" "}
+			</div>{" "}
+			<h3 className="font-medium"> Options </h3>{" "}
+			{options.map((opt, i) => (
+				<div key={i} className="flex items-center gap-2">
+					<input
+						type="text"
+						value={opt.text}
+						onChange={(e) => {
+							const newOpts = [...options];
+							newOpts[i].text = e.target.value;
+							setOptions(newOpts);
+						}}
+						placeholder={`Option ${i + 1}`}
+						className="flex-1 p-2 border rounded"
+						required
+					/>
+					<input
+						type="file"
+						accept="image/*"
+						onChange={(e) => handleOptionImageChange(e, i)}
+					/>{" "}
+					<label className="flex items-center">
+						<input
+							type="radio"
+							name="correct"
+							checked={correctIndex === i}
+							onChange={() => setCorrectIndex(i)}
+							className="mr-1"
+						/>
+						Correct{" "}
+					</label>{" "}
 				</div>
-
-				{/* Form Layout */}
-				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-					{/* Main Section */}
-					<div className="lg:col-span-2 space-y-6">
-						{/* Question */}
-						<div>
-							<h3 className="text-sm font-medium text-gray-700 mb-2">
-								Set Question
-							</h3>
-							<textarea
-								placeholder="Enter your question here"
-								className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-							></textarea>
-							<button className="mt-2 text-sm text-blue-500 hover:underline flex items-center">
-								🌟 Generate With AI
-							</button>
-						</div>
-
-						{/* Upload Image */}
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">
-								Upload Image
-							</label>
-							<div className="border border-dashed border-gray-300 p-6 rounded-md text-center">
-								<p className="text-sm text-gray-500">
-									Drag & drop or click to choose file
-								</p>
-								<p className="text-xs text-gray-400">Max file size: 10mb</p>
-							</div>
-						</div>
-
-						{/* Options */}
-						<div className="space-y-3">
-							{[
-								"A. Donald Trump",
-								"B. Dapo Abiodun",
-								"C. Joe Biden",
-								"D. Kamala Harris",
-							].map((option, index) => (
-								<label
-									key={index}
-									className="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:shadow-md"
-								>
-									<input
-										type="radio"
-										name="answer"
-										className="mr-4 accent-blue-500"
-									/>
-									<span className="text-sm text-gray-700">{option}</span>
-								</label>
-							))}
-						</div>
-
-						{/* Next Button */}
-						<button
-							onClick={onNext}
-							className="w-full mt-6 py-3 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600"
-						>
-							Next
-						</button>
-					</div>
-
-					{/* Side Section */}
-					<div className="space-y-4 bg-gray-50 p-4 rounded-md shadow-md">
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Question Type
-							</label>
-							<select className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-								<option value="">Select</option>
-								<option value="mcq">MCQ</option>
-								<option value="essay">Essay</option>
-							</select>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Answer Type
-							</label>
-							<select className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-								<option value="">Select</option>
-								<option value="single">Single Answer</option>
-								<option value="multiple">Multiple Answers</option>
-							</select>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Exam Time
-							</label>
-							<input
-								type="text"
-								placeholder="e.g., 1 hour"
-								className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Point Per Question
-							</label>
-							<select className="w-full mt-1 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-								<option value="">Select</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
+			))}{" "}
+			<div className="flex gap-4 mt-4">
+				<button
+					type="button"
+					onClick={handleAdd}
+					className="px-4 py-2 bg-gray-200 rounded"
+				>
+					{" "}
+					Add Question{" "}
+				</button>{" "}
+				<button
+					type="button"
+					onClick={onFinish}
+					className="px-4 py-2 bg-green-500 text-white rounded"
+				>
+					{" "}
+					Finish & Create{" "}
+				</button>{" "}
+			</div>{" "}
 		</div>
 	);
 }
-// Step 3: Congratulations Component
- function Congratulations() {
-		const [copied, setCopied] = useState(false);
-		const shareLink = "https://www.figma.com/design/sample-link";
 
-		const handleCopy = () => {
-			navigator.clipboard.writeText(shareLink);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
-		};
-
-		return (
-			<div className="min-h-screen bg-gray-100 flex items-center justify-center">
-				<div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md text-center">
-					{/* Title */}
-					<h2 className="text-xl font-semibold text-[#002349] mb-2">
-						Congratulations
-					</h2>
-					<p className="text-sm text-gray-700 mb-6">
-						You've Successfully Setup Your Exam
-					</p>
-
-					{/* Social Media Icons */}
-					<p className="text-sm text-gray-500 mb-4">Share Your Exam With</p>
-					<div className="flex justify-center space-x-4 mb-6">
-						<button className="text-green-500 text-xl hover:scale-110 transition">
-							<FaWhatsapp />
-						</button>
-						<button className="text-blue-500 text-xl hover:scale-110 transition">
-							<FaTelegram />
-						</button>
-						<button className="text-blue-700 text-xl hover:scale-110 transition">
-							<FaLinkedin />
-						</button>
-						<button className="text-blue-600 text-xl hover:scale-110 transition">
-							<FaFacebook />
-						</button>
-						<button className="text-pink-500 text-xl hover:scale-110 transition">
-							<FaInstagram />
-						</button>
-					</div>
-
-					{/* Share Link Section */}
-					<p className="text-sm text-gray-500 mb-2">or share with link</p>
-					<div className="flex items-center justify-between border border-gray-300 rounded-md px-4 py-2 bg-gray-50">
-						<p className="text-sm text-gray-600 truncate">{shareLink}</p>
-						<button
-							onClick={handleCopy}
-							className="text-gray-500 hover:text-gray-800 transition"
-						>
-							<FiCopy />
-						</button>
-					</div>
-					{copied && (
-						<p className="text-xs text-green-500 mt-2">
-							Link copied to clipboard!
-						</p>
-					)}
-				</div>
-			</div>
-		);
- }
+function Congratulations({ count }) {
+	return (
+		<div className="p-6 text-center">
+			<h2 className="text-2xl font-semibold mb-2"> Exam Created! </h2>{" "}
+			<p>
+				{" "}
+				You added {count}
+				question(s).{" "}
+			</p>{" "}
+		</div>
+	);
+}
