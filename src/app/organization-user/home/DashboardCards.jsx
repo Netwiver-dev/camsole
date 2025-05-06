@@ -1,46 +1,62 @@
-import { FaUsers, FaCertificate } from "react-icons/fa";
+'use client';
 
-export default function DashboardCards() {
-	const cards = [
-		{
-			label: "Students",
-			count: 56,
-			bgColor: "bg-orange-100",
-			textColor: "text-orange-800",
-			iconBg: "bg-orange-200",
-			icon: <FaUsers className="text-orange-800 text-xl" />,
-		},
-		{
-			label: "Certificate",
-			count: 56,
-			bgColor: "bg-purple-100",
-			textColor: "text-purple-800",
-			iconBg: "bg-purple-200",
-			icon: <FaCertificate className="text-purple-800 text-xl" />,
-		},
-	];
+import { FaGraduationCap, FaCalendarAlt, FaChartLine, FaBook } from 'react-icons/fa';
 
-	return (
-		<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-			{cards.map((card, index) => (
-				<div
-					key={index}
-					className={`flex items-center justify-between p-4 rounded-lg shadow ${card.bgColor}`}
-				>
-					{/* Icon */}
-					<div
-						className={`w-10 h-10 flex items-center justify-center rounded-full ${card.iconBg}`}
-					>
-						{card.icon}
-					</div>
+export default function DashboardCards({ 
+  examsCompleted = 0, 
+  examsUpcoming = 0,
+  averageScore = 0,
+  totalQuestionsAnswered = 0 
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+      <div className="bg-white rounded-lg shadow p-4">
+        <div className="flex items-center">
+          <div className="rounded-full bg-blue-100 p-3 mr-4">
+            <FaGraduationCap className="text-xl text-blue-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Completed Exams</p>
+            <p className="text-2xl font-bold">{examsCompleted}</p>
+          </div>
+        </div>
+      </div>
 
-					{/* Text Content */}
-					<div className="text-right">
-						<p className="text-lg font-bold">{card.count}</p>
-						<p className="text-sm font-medium text-gray-700">{card.label}</p>
-					</div>
-				</div>
-			))}
-		</div>
-	);
+      <div className="bg-white rounded-lg shadow p-4">
+        <div className="flex items-center">
+          <div className="rounded-full bg-yellow-100 p-3 mr-4">
+            <FaCalendarAlt className="text-xl text-yellow-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Upcoming Exams</p>
+            <p className="text-2xl font-bold">{examsUpcoming}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-4">
+        <div className="flex items-center">
+          <div className="rounded-full bg-green-100 p-3 mr-4">
+            <FaChartLine className="text-xl text-green-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Average Score</p>
+            <p className="text-2xl font-bold">{averageScore}%</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-4">
+        <div className="flex items-center">
+          <div className="rounded-full bg-purple-100 p-3 mr-4">
+            <FaBook className="text-xl text-purple-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Questions Answered</p>
+            <p className="text-2xl font-bold">{totalQuestionsAnswered}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

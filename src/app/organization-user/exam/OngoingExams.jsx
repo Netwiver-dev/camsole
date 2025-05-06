@@ -1,75 +1,96 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useRouter } from "next/navigation"; // Import router for navigation
+import Link from 'next/link';
+import { FaCalendarAlt, FaClock, FaPlayCircle, FaHourglass } from 'react-icons/fa';
 
-export default function OngoingExams() {
-	const router = useRouter(); // Initialize the router
+export default function OngoingExams({ exams }) {
+  // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not specified';
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
-	const ongoingExams = [
-		{
-			title: "English Language",
-			description:
-				"Lorem ipsum dolor sit amet consectetur. Integer sollicitudin at nisl sed eget.",
-			duration: "1hr",
-			date: "05/11/2024",
-			image: "/images/exams/test.png",
-		},
-		{
-			title: "Mathematics",
-			description:
-				"Lorem ipsum dolor sit amet consectetur. Integer sollicitudin at nisl sed eget.",
-			duration: "1hr",
-			date: "05/11/2024",
-			image: "/images/exams/test.png",
-		},
-		{
-			title: "Chemistry",
-			description:
-				"Lorem ipsum dolor sit amet consectetur. Integer sollicitudin at nisl sed eget.",
-			duration: "1hr",
-			date: "05/11/2024",
-			image: "/images/exams/test.png",
-		},
-	];
+  // Get remaining time percentage
+  const getRemainingTimePercentage = (attempt) => {
+    if (!attempt?.timeRemaining) return 0;
+    
+    // Parse the time remaining string "HH:MM"
+    const [hours, minutes] = attempt.timeRemaining.split(':').map(Number);
+    const remainingMinutes = hours * 60 + minutes;
+    
+    // Get the original exam duration
+    const exam = exams.find(e => e._id === attempt.examId);
+    if (!exam?.duration) return 0;
+    
+    const [durationHours, durationMinutes] = exam.duration.split(':').map(Number);
+    const totalMinutes = durationHours * 60 + durationMinutes;
+    
+    return Math.min(100, Math.round((remainingMinutes / totalMinutes) * 100));
+  };
 
-	// Navigate to the TakeExamPage with router.push
-	const handleTakeExam = () => {
-		router.push("/organization-user/exam/take-exam"); // Adjust the path as needed
-	};
+  if (!exams || exams.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6 text-center">
+        <p className="text-gray-500">No ongoing exams found.</p>
+        <p className="text-sm text-gray-400 mt-2">Start an exam from the Upcoming tab.</p>
+      </div>
+    );
+  }
 
-	return (
-		<div>
-			<h2 className="text-lg font-semibold text-gray-800 mb-4">Exams</h2>
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-				{ongoingExams.map((exam, index) => (
-					<div
-						key={index}
-						className="bg-white p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
-					>
-						<Image
-							src={exam.image}
-							alt={exam.title}
-							width={500}
-							height={200}
-							className="w-full h-32 object-cover rounded-lg mb-4"
-						/>
-						<h3 className="text-sm font-medium text-gray-800">{exam.title}</h3>
-						<p className="text-xs text-gray-500">{exam.description}</p>
-						<div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-							<p>📅 {exam.date}</p>
-							<p>⏱ {exam.duration}</p>
-						</div>
-						{/* Button to navigate to TakeExamPage */}
-						<button
-							onClick={handleTakeExam}
-							className="mt-4 w-full py-2 text-sm font-medium bg-orange-500 text-white rounded-md hover:bg-orange-600"
-						>
-							Take Exam
-						</button>
-					</div>
-				))}
-			</div>
-		</div>
-	);
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {exams.map((exam) => (
+        <div key={exam._id} className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-yellow-50 p-4">
+            <h3 className="font-semibold text-lg">{exam.title}</h3>
+            <p className="text-gray-600 text-sm line-clamp-2">
+              {exam.description || 'No description available'}
+            </p>
+          </div>
+          
+          <div className="p-4">
+            <div className="flex items-center text-sm text-gray-600 mb-2">
+              <FaCalendarAlt className="mr-2 text-yellow-500" />
+              Started: {formatDate(exam.attempt?.startTime || exam.date)}
+            </div>
+            
+            <div className="flex flex-col mb-4">
+              <div className="flex items-center text-sm text-gray-600 mb-1">
+                <FaHourglass className="mr-2 text-yellow-500" />
+                Time Remaining: {exam.attempt?.timeRemaining || '00:00'}
+              </div>
+              
+              {/* Progress bar */}
+              <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                <div 
+                  className="bg-yellow-500 h-2.5 rounded-full" 
+                  style={{ width: `${getRemainingTimePercentage(exam.attempt)}%` }}
+                ></div>
+              </div>
+            </div>
+            
+            <div className="flex items-center text-sm text-gray-600 mb-4">
+              <span className="font-semibold">Questions:</span>
+              <span className="ml-2">{exam.questions?.length || 0}</span>
+            </div>
+            
+            <Link 
+              href={`/organization-user/exam/take-exam?id=${exam._id}`}
+              className="w-full mt-2 bg-yellow-600 text-white py-2 px-4 rounded-lg flex items-center justify-center hover:bg-yellow-700 transition"
+            >
+              <FaPlayCircle className="mr-2" />
+              Continue Exam
+            </Link>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }

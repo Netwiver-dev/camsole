@@ -5,6 +5,9 @@ import {
 	FaTasks, // For "Examination Setup"
 	FaAward, // For "Certification"
 	FaCheckSquare, // For "Question Bank"
+	FaClipboardList, // For "Exam Dashboard"
+	FaUser, // For "Profile"
+	FaCog, // For "Settings"
 } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,19 +23,24 @@ export default function Sidebar() {
 			icon: <FaHome className="text-lg" />, // Home Icon
 		},
 		{
-			href: "/organization-user/exam",
-			label: "Exam",
-			icon: <FaTasks className="text-lg" />, // Tasks Icon
-		},
-		{
-			href: "/organization-user/certification",
-			label: "Certification",
-			icon: <FaAward className="text-lg" />, // Award Icon
+			href: "/organization-user/exam-dash",
+			label: "Exams",
+			icon: <FaClipboardList className="text-lg" />, // Clipboard Icon
 		},
 		{
 			href: "/organization-user/result",
-			label: "Result",
+			label: "Results",
 			icon: <FaCheckSquare className="text-lg" />, // Question Circle Icon
+		},
+		{
+			href: "/organization-user/certification",
+			label: "Certifications",
+			icon: <FaAward className="text-lg" />, // Award Icon
+		},
+		{
+			href: "/organization-user/profile",
+			label: "Profile",
+			icon: <FaUser className="text-lg" />, // User Icon
 		},
 	];
 
