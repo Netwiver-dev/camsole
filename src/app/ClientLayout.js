@@ -1,7 +1,8 @@
 "use client";
 
-import { AuthProvider } from "./lib/auth-context";
+import { useEffect } from "react";
 
 export default function ClientLayout({ children }) {
-	return <AuthProvider> {children} </AuthProvider>;
+    // This component doesn't need to wrap children in AuthProvider since that's already done in layout.js
+    return < > { children } < />;
 }

@@ -1,33 +1,23 @@
-import { NextResponse } from 'next/server';
-import { getAuthToken, verifyToken } from '@/app/lib/auth';
+import { NextResponse } from "next/server";
+import { getCurrentUser } from "../../../lib/auth";
 
-export async function GET(request) {
+export async function GET() {
     try {
-        // Wait for the token to be retrieved
-        const token = await getAuthToken(request);
+        const user = await getCurrentUser();
 
-        if (!token) {
-            return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+        if (!user) {
+            return NextResponse.json({
+                error: "Not authenticated",
+                authenticated: false,
+            }, { status: 401 });
         }
 
-        const decodedToken = await verifyToken(token);
-
-        if (!decodedToken) {
-            return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-        }
-
-        // Return user data from decoded token
         return NextResponse.json({
-            user: {
-                id: decodedToken.userId,
-                email: decodedToken.email,
-                role: decodedToken.role,
-                name: decodedToken.name,
-                class: decodedToken.class
-            }
+            ...user,
+            authenticated: true,
         });
     } catch (error) {
-        console.error('Auth error:', error);
-        return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
+        console.error("Error fetching current user:", error);
+        return NextResponse.json({ error: "An error occurred", authenticated: false }, { status: 500 });
     }
 }

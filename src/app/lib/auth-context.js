@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Create auth context
 const AuthContext = createContext();
@@ -167,105 +168,76 @@ export const AuthProvider = ({ children }) => {
                 isOffline,
                 checkAuth,
             }
-        } >
-        { children } <
+        } > { " " } { children } { " " } <
         /AuthContext.Provider>
     );
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-};
+// FIXED: Protected route component that prevents hooks order changes
+export function ProtectedRoute({ children, allowedRoles = [] }) {
+    // Always call hooks in the same order
+    const { user, loading } = useAuth();
+    const router = useRouter();
+    const [authorized, setAuthorized] = useState(false);
 
-// Higher-order component for protected routes
-export function withAuth(Component) {
-    return function ProtectedRoute(props) {
-        // Ensure we're running in client-side where context is available
-        const [mounted, setMounted] = useState(false);
-
-        useEffect(() => {
-            setMounted(true);
-        }, []);
-
-        // Don't try to access context until component is mounted
-        if (!mounted) {
-            return ( <
-                div className = "flex items-center justify-center min-h-screen" >
-                <
-                div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" > < /div> <
-                /div>
-            );
-        }
-
-        const auth = useAuth();
-        const { user, loading, isOffline } = auth;
-        const router = useRouter();
-        const pathname = usePathname();
-
-        useEffect(() => {
-            // If not loading and not authenticated, redirect to login
-            if (!loading && !user) {
+    useEffect(() => {
+        // Check authorization after loading completes
+        if (!loading) {
+            // If no user is found, redirect to login
+            if (!user) {
                 router.push("/login");
+                return;
             }
 
-            // Redirect based on role
-            if (!loading && user) {
-                const role = user.role;
-                const isOrgPath = pathname ? .startsWith("/organization");
-                const isOrgUserPath = pathname ? .startsWith("/organization-user");
-
-                if (role === "student" && isOrgPath) {
-                    router.push("/organization-user/home");
-                } else if (role === "teacher" && isOrgUserPath) {
-                    router.push("/organization/home");
+            // If roles are specified, check if user has required role
+            if (allowedRoles.length > 0) {
+                const hasRequiredRole = allowedRoles.includes(user.role);
+                if (!hasRequiredRole) {
+                    // Redirect to unauthorized page or dashboard
+                    router.push("/unauthorized");
+                    return;
                 }
             }
-        }, [loading, user, router, pathname]);
 
-        // Show loading while checking authentication
-        if (loading) {
-            return ( <
-                div className = "flex items-center justify-center min-h-screen" >
-                <
-                div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" > < /div> <
-                /div>
-            );
+            // If we reach here, the user is authorized
+            setAuthorized(true);
         }
+    }, [user, loading, router, allowedRoles]);
 
-        // If offline, show a warning but allow local content to display
-        if (isOffline) {
-            return ( <
-                >
-                <
-                div className = "bg-yellow-500 text-white px-4 py-2 text-sm font-medium flex items-center justify-center" >
-                <
-                svg xmlns = "http://www.w3.org/2000/svg"
-                className = "h-5 w-5 mr-2"
-                viewBox = "0 0 20 20"
-                fill = "currentColor" >
-                <
-                path fillRule = "evenodd"
-                d = "M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clipRule = "evenodd" /
-                >
-                <
-                /svg>
-                You 're currently offline. Some features may be unavailable. <
-                /div> <
-                div className = { isOffline ? "pointer-events-none opacity-70" : "" } > {
-                    user && < Component {...props }
-                    />} <
-                    /div> <
-                    />
-                );
-            }
-
-            // If authenticated, render the component
-            return user ? < Component {...props }
-            /> : null;
-        };
+    // Show loading state or nothing while checking auth
+    if (loading || !authorized) {
+        return ( <
+            div className = "min-h-screen flex items-center justify-center bg-gray-50" >
+            <
+            div className = "text-center" > { " " } {
+                loading ? ( <
+                    >
+                    <
+                    div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto" > { " " } <
+                    /div>{" "} <
+                    p className = "mt-4 text-gray-600" > Loading... < /p>{" "} < / >
+                ) : ( <
+                    p className = "text-gray-600" > Checking authorization... < /p>
+                )
+            } { " " } <
+            /div>{" "} < /
+            div >
+        );
     }
+
+    // If authorized, show the children
+    return < > { children } < />;
+}
+
+// Higher-order component to wrap pages with authentication
+export function withAuth(Component, allowedRoles = []) {
+    return function AuthenticatedComponent(props) {
+        return ( <
+            ProtectedRoute allowedRoles = { allowedRoles } >
+            <
+            Component {...props }
+            /> < /
+            ProtectedRoute >
+        );
+    };
+}

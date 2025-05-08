@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { getDb } from "../../../lib/db";
-import { createToken, cookieOptions } from "../../../lib/auth";
+import { setAuthCookie } from "../../../lib/auth";
 
 export async function POST(request) {
     try {
@@ -27,14 +27,15 @@ export async function POST(request) {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user - no verification needed
+        // Create new user
         const newUser = {
             name,
             email: email.toLowerCase(),
             password: hashedPassword,
             role,
             createdAt: new Date(),
-            isVerified: true, // User is automatically verified
+            // User is automatically verified
+            isVerified: true,
         };
 
         // Insert user into database
@@ -45,22 +46,18 @@ export async function POST(request) {
             .collection("users")
             .findOne({ _id: result.insertedId });
 
-        // Create and set authentication cookie
-        const token = await createToken({
-            id: user._id.toString(),
-            email: user.email,
-            role: user.role,
-        });
+        // Set authentication cookie
+        await setAuthCookie(user);
 
         // Return user data (excluding password)
         const { password: _, ...userData } = user;
 
-        // Prepare response and attach cookie
-        const response = NextResponse.json({ message: "Registration successful", user: userData }, { status: 201 });
-        response.cookies.set("authToken", token, cookieOptions);
-        return response;
+        return NextResponse.json({
+            message: "Signup successful",
+            user: userData,
+        }, { status: 201 });
     } catch (error) {
-        console.error("Registration error:", error);
-        return NextResponse.json({ error: "An error occurred during registration" }, { status: 500 });
+        console.error("Signup error:", error);
+        return NextResponse.json({ error: "An error occurred during signup" }, { status: 500 });
     }
 }

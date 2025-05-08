@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../../lib/auth-context";
-import { withAuth } from "../../lib/auth-context";
+import { useAuth, withAuth } from "@/contexts/AuthContext";
 import {
     FaCalendarAlt,
     FaCheckCircle,
@@ -293,12 +292,12 @@ function StudentDashboard() {
                         <
                         h3 className = "font-medium" > { exam.title } < /h3> <
                         span className = { `text-sm font-medium px-2 py-1 rounded-full ${
-														exam.result.percentage >= 70
-															? "bg-green-100 text-green-800"
-															: exam.result.percentage >= 50
-															? "bg-yellow-100 text-yellow-800"
-															: "bg-red-100 text-red-800"
-													}` } > { exam.result.percentage } %
+                                                        exam.result.percentage >= 70
+                                                            ? "bg-green-100 text-green-800"
+                                                            : exam.result.percentage >= 50
+                                                            ? "bg-yellow-100 text-yellow-800"
+                                                            : "bg-red-100 text-red-800"
+                                                    }` } > { exam.result.percentage } %
                         <
                         /span> < /
                         div > <

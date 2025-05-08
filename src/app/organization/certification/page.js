@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { withAuth } from '../../lib/auth-context';
+import { withAuth } from '@/contexts/AuthContext';
 import { FaSearch, FaFilePdf, FaUserGraduate, FaDownload, FaEye } from 'react-icons/fa';
 import Link from 'next/link';
 
@@ -84,16 +84,16 @@ function CertificationPage() {
         div className = "mb-6" >
         <
         h1 className = "text-2xl md:text-3xl font-bold mb-2" > Certificate Management < /h1> <
-        p className = "text-gray-600" > View and manage issued certificates < /p> <
-        /div>
+        p className = "text-gray-600" > View and manage issued certificates < /p> < /
+        div >
 
         {
             error && ( <
                 div className = "bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6" >
                 <
                 p className = "font-bold" > Error < /p> <
-                p > { error } < /p> <
-                /div>
+                p > { error } < /p> < /
+                div >
             )
         }
 
@@ -110,14 +110,15 @@ function CertificationPage() {
         placeholder = "Search by student name, exam title or certificate ID..."
         value = { filter }
         onChange = {
-            (e) => setFilter(e.target.value) }
+            (e) => setFilter(e.target.value)
+        }
         className = "w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" /
         >
         <
         FaSearch className = "absolute left-3 top-3 text-gray-400" / >
         <
-        /div> <
-        /div>
+        /div> < /
+        div >
 
         <
         div className = "md:w-auto" >
@@ -125,17 +126,17 @@ function CertificationPage() {
         Link href = "/organization/certification/issue"
         className = "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block" >
         Issue New Certificate <
-        /Link> <
-        /div> <
-        /div> <
-        /div>
+        /Link> < /
+        div > <
+        /div> < /
+        div >
 
         {
             loading ? ( <
                 div className = "flex justify-center py-10" >
                 <
-                div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" > < /div> <
-                /div>
+                div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" > < /div> < /
+                div >
             ) : filteredCertificates.length > 0 ? ( <
                 div className = "bg-white shadow-md rounded-lg overflow-x-auto" >
                 <
@@ -162,8 +163,8 @@ function CertificationPage() {
                 /th> <
                 th className = "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" >
                 Actions <
-                /th> <
-                /tr> <
+                /th> < /
+                tr > <
                 /thead> <
                 tbody className = "bg-white divide-y divide-gray-200" > {
                     filteredCertificates.map((certificate) => ( <
@@ -186,10 +187,10 @@ function CertificationPage() {
                         div className = "text-sm font-medium text-gray-900" > { certificate.student ? .name || 'Unknown' } <
                         /div> <
                         div className = "text-sm text-gray-500" > { certificate.student ? .email || 'No email' } <
-                        /div> <
-                        /div> <
-                        /div> <
-                        /td> <
+                        /div> < /
+                        div > <
+                        /div> < /
+                        td > <
                         td className = "px-6 py-4 whitespace-nowrap" >
                         <
                         div className = "text-sm text-gray-900" > { certificate.exam ? .title || 'Unknown Exam' } <
@@ -197,39 +198,41 @@ function CertificationPage() {
                         div className = "text-sm text-gray-500" >
                         Score: { certificate.result ? .percentage ? .toFixed(1) || 0 } %
                         <
-                        /div> <
-                        /td> <
+                        /div> < /
+                        td > <
                         td className = "px-6 py-4 whitespace-nowrap text-sm text-gray-500" > { formatDate(certificate.createdAt) } <
                         /td> <
                         td className = "px-6 py-4 whitespace-nowrap" >
                         <
                         span className = "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" >
                         Active <
-                        /span> <
-                        /td> <
+                        /span> < /
+                        td > <
                         td className = "px-6 py-4 whitespace-nowrap text-sm font-medium" >
                         <
                         div className = "flex space-x-2" >
                         <
                         button onClick = {
-                            () => handleDownloadCertificate(certificate._id) }
+                            () => handleDownloadCertificate(certificate._id)
+                        }
                         className = "text-blue-600 hover:text-blue-900 flex items-center" >
                         <
                         FaDownload className = "mr-1" / > Download <
                         /button> <
                         button onClick = {
-                            () => handleViewCertificate(certificate._id) }
+                            () => handleViewCertificate(certificate._id)
+                        }
                         className = "text-green-600 hover:text-green-900 flex items-center" >
                         <
                         FaEye className = "mr-1" / > View <
-                        /button> <
-                        /div> <
-                        /td> <
-                        /tr>
+                        /button> < /
+                        div > <
+                        /td> < /
+                        tr >
                     ))
                 } <
-                /tbody> <
-                /table> <
+                /tbody> < /
+                table > <
                 /div>
             ) : ( <
                 div className = "bg-white shadow-md rounded-lg p-8 text-center" >
@@ -245,8 +248,8 @@ function CertificationPage() {
                 Link href = "/organization/certification/issue"
                 className = "mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block" >
                 Issue New Certificate <
-                /Link> <
-                /div>
+                /Link> < /
+                div >
             )
         } <
         /div>

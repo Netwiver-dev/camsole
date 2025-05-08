@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { withAuth } from '../../lib/auth-context';
+import { withAuth } from '@/contexts/AuthContext';
 import { FaSearch } from 'react-icons/fa';
 import UpcomingExams from './UpcomingExams';
 import OngoingExams from './OngoingExams';
@@ -69,8 +69,8 @@ function ExamDashboard() {
         return ( <
             div className = "flex items-center justify-center min-h-screen" >
             <
-            div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" > < /div> <
-            /div>
+            div className = "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" > < /div> < /
+            div >
         );
     }
 
@@ -80,8 +80,8 @@ function ExamDashboard() {
         div className = "mb-6" >
         <
         h1 className = "text-2xl font-bold mb-2" > Exam Dashboard < /h1> <
-        p className = "text-gray-600" > View and manage your examinations < /p> <
-        /div>
+        p className = "text-gray-600" > View and manage your examinations < /p> < /
+        div >
 
         {
             error && ( <
@@ -89,8 +89,8 @@ function ExamDashboard() {
                 role = "alert" >
                 <
                 p className = "font-bold" > Error < /p> <
-                p > { error } < /p> <
-                /div>
+                p > { error } < /p> < /
+                div >
             )
         }
 
@@ -108,14 +108,15 @@ function ExamDashboard() {
         placeholder = "Search exams..."
         value = { searchTerm }
         onChange = {
-            (e) => setSearchTerm(e.target.value) }
+            (e) => setSearchTerm(e.target.value)
+        }
         /> <
         div className = "absolute inset-y-0 left-0 flex items-center pl-3" >
         <
         FaSearch className = "text-gray-400" / >
         <
-        /div> <
-        /div> <
+        /div> < /
+        div > <
         /div> <
         div className = "flex space-x-2" >
         <
@@ -123,26 +124,29 @@ function ExamDashboard() {
                 activeTab === 'upcoming' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
               }` }
         onClick = {
-            () => setActiveTab('upcoming') } >
+            () => setActiveTab('upcoming')
+        } >
         Upcoming({ filteredExams.upcoming.length }) <
         /button> <
         button className = { `px-4 py-2 rounded-lg ${
                 activeTab === 'ongoing' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
               }` }
         onClick = {
-            () => setActiveTab('ongoing') } >
+            () => setActiveTab('ongoing')
+        } >
         Ongoing({ filteredExams.ongoing.length }) <
         /button> <
         button className = { `px-4 py-2 rounded-lg ${
                 activeTab === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
               }` }
         onClick = {
-            () => setActiveTab('completed') } >
+            () => setActiveTab('completed')
+        } >
         Completed({ filteredExams.completed.length }) <
-        /button> <
-        /div> <
-        /div> <
-        /div>
+        /button> < /
+        div > <
+        /div> < /
+        div >
 
         { /* Exam Content */ } <
         div > {
@@ -165,8 +169,8 @@ function ExamDashboard() {
                 />
             )
         } <
-        /div> <
-        /div>
+        /div> < /
+        div >
     );
 }
 

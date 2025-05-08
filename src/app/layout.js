@@ -1,40 +1,29 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const inter = Inter({
     subsets: ["latin"],
 });
 
 export const metadata = {
-    title: "Camsole",
-    description: "School management website",
-    icons: {
-        icon: "/images/camsole-logo.png",
-    },
+    title: "Camsole - Examination Platform",
+    description: "A comprehensive platform for managing examinations",
 };
 
 export default function RootLayout({ children }) {
     return ( <
         html lang = "en"
-        className = { `${geistSans.variable} ${geistMono.variable}` }
-        suppressHydrationWarning >
+        className = { inter.className } >
         <
-        body >
+        body suppressHydrationWarning >
         <
         AuthProvider >
         <
-        ClientLayout > { children } <
-        /ClientLayout> < /
-        AuthProvider > <
-        /body> < /
-        html >
+        ClientLayout > { children } < /ClientLayout>{" "} <
+        /AuthProvider>{" "} <
+        /body>{" "} <
+        /html>
     );
 }

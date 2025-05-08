@@ -1,81 +1,63 @@
-import db from '../../../lib/mongodb';
-import { User } from '../../../lib/models';
-import { generateToken, setAuthCookie } from '../../../lib/auth';
-import bcrypt from 'bcryptjs';
+import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { getDb } from "../../../lib/db";
+import { createToken, cookieOptions } from "../../../lib/auth";
 
-export async function POST(req) {
-    await db;
-
+export async function POST(request) {
     try {
-        const { email, password } = await req.json();
+        const { email, password } = await request.json();
 
-        // Basic validation
+        // Validate input
         if (!email || !password) {
-            return new Response(
-                JSON.stringify({ error: 'Email and password are required' }), { status: 400 }
-            );
+            return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
         }
 
-        // Find user by email
-        const user = await User.findOne({ email });
+        // Get database connection
+        const db = await getDb();
+
+        // Find user by email - convert to lowercase for case-insensitive comparison
+        const user = await db.collection("users").findOne({
+            email: email.toLowerCase(),
+        });
+
+        // Add debugging for troubleshooting
+        console.log(`Login attempt for email: ${email}`);
+        console.log(`User found: ${user ? "Yes" : "No"}`);
 
         // Check if user exists
         if (!user) {
-            return new Response(
-                JSON.stringify({ error: 'Invalid login credentials' }), { status: 401 }
-            );
+            console.log("User not found");
+            return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
         }
 
-        // Verify if account is verified
-        if (!user.isVerified) {
-            return new Response(
-                JSON.stringify({ error: 'Please verify your email before logging in' }), { status: 403 }
-            );
-        }
-
-        // Check password
+        // Compare password
         const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log(`Password valid: ${isPasswordValid ? "Yes" : "No"}`);
 
         if (!isPasswordValid) {
-            return new Response(
-                JSON.stringify({ error: 'Invalid login credentials' }), { status: 401 }
-            );
+            console.log("Invalid password");
+            return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
         }
 
-        // Generate token
-        const token = generateToken(user);
-
-        // Set token in cookie
-        setAuthCookie(token);
-
-        // Return user info (excluding password)
-        const userResponse = {
-            _id: user._id,
-            name: user.name,
+        // Create and set authentication cookie
+        const token = await createToken({
+            id: user._id.toString(),
             email: user.email,
             role: user.role,
-            class: user.class
-        };
+        });
 
-        return new Response(
-            JSON.stringify({
-                message: 'Login successful',
-                user: userResponse
-            }), { status: 200 }
-        );
+        // Return user data (excluding password)
+        const { password: _, ...userData } = user;
 
+        // Log successful login
+        console.log(`User ${user.email} (${user.role}) logged in successfully`);
+
+        // Prepare response and attach cookie
+        const response = NextResponse.json({ message: "Login successful", user: userData }, { status: 200 });
+        response.cookies.set("authToken", token, cookieOptions);
+        return response;
     } catch (error) {
-        console.error('Login error:', error);
-        return new Response(
-            JSON.stringify({ error: 'Internal server error' }), { status: 500 }
-        );
+        console.error("Login error:", error);
+        return NextResponse.json({ error: "An error occurred during login" }, { status: 500 });
     }
-}
-
-// GET handler - check current authentication status
-export async function GET(req) {
-    // This is implemented through the /api/auth/me endpoint
-    return new Response(
-        JSON.stringify({ error: 'Use /api/auth/me endpoint for auth status checks' }), { status: 405 }
-    );
 }

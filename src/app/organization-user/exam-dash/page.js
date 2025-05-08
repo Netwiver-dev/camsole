@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../../lib/auth-context";
-import { withAuth } from "../../lib/auth-context";
+import { useAuth, withAuth } from "@/contexts/AuthContext";
 import {
     FaCalendarAlt,
     FaClock,
@@ -197,40 +196,40 @@ function ExamDashboard() {
                 () => handleFilterChange("all")
             }
             className = { `px-4 py-2 rounded-md ${
-							filter === "all"
-								? "bg-blue-500 text-white"
-								: "bg-gray-200 text-gray-700"
-						}` } >
+                            filter === "all"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-200 text-gray-700"
+                        }` } >
             All <
             /button> <
             button onClick = {
                 () => handleFilterChange("upcoming")
             }
             className = { `px-4 py-2 rounded-md ${
-							filter === "upcoming"
-								? "bg-blue-500 text-white"
-								: "bg-gray-200 text-gray-700"
-						}` } >
+                            filter === "upcoming"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-200 text-gray-700"
+                        }` } >
             Upcoming <
             /button> <
             button onClick = {
                 () => handleFilterChange("in-progress")
             }
             className = { `px-4 py-2 rounded-md ${
-							filter === "in-progress"
-								? "bg-blue-500 text-white"
-								: "bg-gray-200 text-gray-700"
-						}` } >
+                            filter === "in-progress"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-200 text-gray-700"
+                        }` } >
             In Progress <
             /button> <
             button onClick = {
                 () => handleFilterChange("completed")
             }
             className = { `px-4 py-2 rounded-md ${
-							filter === "completed"
-								? "bg-blue-500 text-white"
-								: "bg-gray-200 text-gray-700"
-						}` } >
+                            filter === "completed"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-200 text-gray-700"
+                        }` } >
             Completed <
             /button> < /
             div > <

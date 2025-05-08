@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { withAuth } from "../../../lib/auth-context";
+import { withAuth } from '@/contexts/AuthContext';
 import {
     FaSearch,
     FaChalkboardTeacher,
@@ -274,8 +274,8 @@ function IssueCertificatePage() {
         div className = "flex-1 flex flex-col items-center" >
         <
         div className = { `w-10 h-10 rounded-full flex items-center justify-center text-white ${
-							step >= 1 ? "bg-blue-600" : "bg-gray-300"
-						}` } >
+                            step >= 1 ? "bg-blue-600" : "bg-gray-300"
+                        }` } >
         1 <
         /div> <
         span className = "text-sm mt-1" > Select Exam < /span> < /
@@ -290,8 +290,8 @@ function IssueCertificatePage() {
         div className = "flex-1 flex flex-col items-center" >
         <
         div className = { `w-10 h-10 rounded-full flex items-center justify-center text-white ${
-							step >= 2 ? "bg-blue-600" : "bg-gray-300"
-						}` } >
+                            step >= 2 ? "bg-blue-600" : "bg-gray-300"
+                        }` } >
         2 <
         /div> <
         span className = "text-sm mt-1" > Select Student < /span> < /
@@ -306,8 +306,8 @@ function IssueCertificatePage() {
         div className = "flex-1 flex flex-col items-center" >
         <
         div className = { `w-10 h-10 rounded-full flex items-center justify-center text-white ${
-							step >= 3 ? "bg-blue-600" : "bg-gray-300"
-						}` } >
+                            step >= 3 ? "bg-blue-600" : "bg-gray-300"
+                        }` } >
         3 <
         /div> <
         span className = "text-sm mt-1" > Review & Issue < /span> < /
@@ -332,10 +332,10 @@ function IssueCertificatePage() {
                             exams.map((exam) => ( <
                                 div key = { exam._id }
                                 className = { `border p-4 rounded-md cursor-pointer hover:bg-blue-50 ${
-											selectedExamId === exam._id
-												? "border-blue-500 bg-blue-50"
-												: "border-gray-200"
-										}` }
+                                            selectedExamId === exam._id
+                                                ? "border-blue-500 bg-blue-50"
+                                                : "border-gray-200"
+                                        }` }
                                 onClick = {
                                     () => setSelectedExamId(exam._id)
                                 } >
@@ -438,10 +438,10 @@ function IssueCertificatePage() {
                             filteredStudents.map((student) => ( <
                                 div key = { student._id }
                                 className = { `border p-4 rounded-md cursor-pointer hover:bg-blue-50 ${
-											selectedStudentId === student._id
-												? "border-blue-500 bg-blue-50"
-												: "border-gray-200"
-										}` }
+                                            selectedStudentId === student._id
+                                                ? "border-blue-500 bg-blue-50"
+                                                : "border-gray-200"
+                                        }` }
                                 onClick = {
                                     () => setSelectedStudentId(student._id)
                                 } >
@@ -564,10 +564,10 @@ function IssueCertificatePage() {
                                     results.map((result) => ( <
                                             div key = { result._id }
                                             className = { `border p-4 rounded-md cursor-pointer hover:bg-blue-50 ${
-												selectedResultId === result._id
-													? "border-blue-500 bg-blue-50"
-													: "border-gray-200"
-											}` }
+                                                selectedResultId === result._id
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-gray-200"
+                                            }` }
                                             onClick = {
                                                 () => setSelectedResultId(result._id)
                                             } >
@@ -607,12 +607,12 @@ function IssueCertificatePage() {
                                         Percentage <
                                         /p> <
                                         p className = { `font-medium ${
-																	result.percentage >= 70
-																		? "text-green-600"
-																		: result.percentage >= 50
-																		? "text-yellow-600"
-																		: "text-red-600"
-																}` } > { result.percentage ? .toFixed(1) } %
+                                                                    result.percentage >= 70
+                                                                        ? "text-green-600"
+                                                                        : result.percentage >= 50
+                                                                        ? "text-yellow-600"
+                                                                        : "text-red-600"
+                                                                }` } > { result.percentage ? .toFixed(1) } %
                                         <
                                         /p> < /
                                         div >
@@ -622,10 +622,10 @@ function IssueCertificatePage() {
                                         <
                                         p className = "text-xs text-gray-500" > Status < /p> <
                                         p className = { `font-medium ${
-																	result.passed
-																		? "text-green-600"
-																		: "text-red-600"
-																}` } > { result.passed ? "Passed" : "Failed" } <
+                                                                    result.passed
+                                                                        ? "text-green-600"
+                                                                        : "text-red-600"
+                                                                }` } > { result.passed ? "Passed" : "Failed" } <
                                         /p> < /
                                         div > <
                                         /div> < /
@@ -669,14 +669,14 @@ function IssueCertificatePage() {
                 <
                 p className = "text-sm text-gray-500 mb-1" > Certificate Type < /p> <
             p className = "font-medium" > Course Completion Certificate < /p> < /
-                div >
+            div >
 
                 <
                 div className = "mb-4" >
                 <
                 p className = "text-sm text-gray-500 mb-1" > Issue Date < /p> <
             p className = "font-medium" > { formatDate(new Date()) } < /p> < /
-                div >
+            div >
 
                 <
                 div >
@@ -685,9 +685,9 @@ function IssueCertificatePage() {
             p className = "font-medium" >
                 Certificate will include a unique verification code and QR code <
                 /p> < /
-                div > <
+            div > <
                 /div> < /
-                div >
+            div >
         )
     }
 
@@ -698,10 +698,10 @@ function IssueCertificatePage() {
     onClick = { handleBack }
     disabled = { step === 1 }
     className = { `px-4 py-2 ${
-							step === 1
-								? "bg-gray-100 text-gray-400 cursor-not-allowed"
-								: "bg-gray-100 text-gray-700 hover:bg-gray-200"
-						} rounded-md` } >
+                            step === 1
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        } rounded-md` } >
         Back <
         /button>
 

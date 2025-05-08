@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../../lib/auth-context";
-import { withAuth } from "../../lib/auth-context";
+import { useAuth, withAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 import {
     FaUser,
     FaEnvelope,
@@ -39,10 +39,11 @@ function ProfilePage() {
         try {
             setLoading(true);
 
-            const response = await fetch("/api/profile");
+            const response = await fetch("/api/profile", { credentials: "include" });
 
             if (!response.ok) {
-                throw new Error("Failed to fetch profile");
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error || "Failed to fetch profile");
             }
 
             const data = await response.json();
@@ -142,10 +143,10 @@ function ProfilePage() {
         {
             updateStatus.message && ( <
                 div className = { `border-l-4 p-4 mb-6 ${
-							updateStatus.success
-								? "bg-green-50 border-green-500 text-green-700"
-								: "bg-red-50 border-red-500 text-red-700"
-						}` } >
+                            updateStatus.success
+                                ? "bg-green-50 border-green-500 text-green-700"
+                                : "bg-red-50 border-red-500 text-red-700"
+                        }` } >
                 <
                 div className = "flex" > {
                     updateStatus.success ? ( <

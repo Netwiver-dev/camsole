@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { withAuth } from '../../lib/auth-context';
-import { useAuth } from '../../lib/auth-context';
+import { withAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { FaDownload, FaExternalLinkAlt, FaSpinner, FaMedal, FaSearch } from 'react-icons/fa';
 import Link from 'next/link';
 

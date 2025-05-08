@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import { getDb } from "./db"; // Updated import to use the function
+import { getDb } from "./db";
 import { ObjectId } from "mongodb";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-default-secret";
@@ -49,30 +49,25 @@ export async function setAuthCookie(userData) {
         role: userData.role,
     });
 
-    // Set the cookie
-    cookies().set("authToken", token, cookieOptions);
-
+    // Return token; route handlers will set the cookie via NextResponse
     return token;
 }
 
-// Clear auth cookie
-export function clearAuthCookie() {
-    cookies().set("authToken", "", {
-        ...cookieOptions,
-        maxAge: 0, // Expire immediately
-    });
-}
+// Export cookieOptions for route handlers
+export { cookieOptions };
 
 // Get current user from token
 export async function getCurrentUser() {
-    const authToken = cookies().get("authToken") ? .value;
+    // Get cookies store (must await dynamic API)
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get("authToken");
 
-    if (!authToken) {
+    if (!authToken || !authToken.value) {
         return null;
     }
 
     try {
-        const tokenData = await verifyToken(authToken);
+        const tokenData = await verifyToken(authToken.value);
 
         if (!tokenData || !tokenData.id) {
             return null;
@@ -107,6 +102,25 @@ export async function authMiddleware() {
     }
 
     return user;
+}
+
+// Add the missing authenticate function
+export async function authenticate(req) {
+    const user = await getCurrentUser();
+
+    if (!user) {
+        return {
+            authenticated: false,
+            status: 401,
+            error: "Unauthorized",
+        };
+    }
+
+    return {
+        authenticated: true,
+        user,
+        status: 200,
+    };
 }
 
 // Teacher authentication middleware

@@ -8,11 +8,10 @@ export async function POST(req) {
     try {
         // Check if the user is authenticated as a teacher
         const authResult = await teacherAuth(req);
-        
-        if (!authResult.authenticated) {
+        if (!authResult || !authResult.authenticated) {
             return new Response(
-                JSON.stringify({ error: authResult.error }),
-                { status: authResult.status }
+                JSON.stringify({ error: authResult?.error || "Unauthorized" }),
+                { status: authResult?.status || 401 }
             );
         }
         
