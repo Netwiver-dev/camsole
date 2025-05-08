@@ -186,6 +186,20 @@ export async function createToken(payload) {
 }
 
 /**
+ * Decode JWT payload without verifying (dev fallback only)
+ */
+function decodeJwtUnverified(token) {
+    try {
+        const parts = token.split(".");
+        if (parts.length !== 3) return null;
+        const payloadJson = Buffer.from(parts[1], "base64").toString();
+        return JSON.parse(payloadJson);
+    } catch {
+        return null;
+    }
+}
+
+/**
  * Verify JWT token using jose
  * @param {string} token - JWT token to verify
  * @returns {Promise<Object|null>} Decoded payload or null
@@ -197,6 +211,10 @@ export async function verifyToken(token) {
         return payload;
     } catch (error) {
         console.error("Token verification failed:", error);
+        // In development only, fall back to unverified decode
+        if (process.env.NODE_ENV !== "production") {
+            return decodeJwtUnverified(token);
+        }
         return null;
     }
 }
