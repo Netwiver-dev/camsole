@@ -219,13 +219,14 @@ export default function CreateExam() {
 				status: publish ? "published" : "draft",
 			};
 
-			const response = await fetch("/api/exams", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(examData),
-			});
+		const response = await fetch("/api/exams", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",    // include auth cookie
+			body: JSON.stringify(examData),
+		});
 
 			if (!response.ok) {
 				throw new Error("Failed to save exam");
