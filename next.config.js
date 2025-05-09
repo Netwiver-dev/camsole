@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // turn off build-time Google Fonts fetching
-    optimizeFonts: false,
-  },
+    // Note: experimental.optimizeFonts is no longer supported in Next.js 15
 };
 
 module.exports = nextConfig;

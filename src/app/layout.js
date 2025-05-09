@@ -1,11 +1,8 @@
-import { Inter } from "next/font/google";
+// Removed Google Font import due to build failure when offline
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-const inter = Inter({
-    subsets: ["latin"],
-});
 
 export const metadata = {
     title: "Camsole - Examination Platform",
@@ -13,9 +10,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-    return ( <
-        html lang = "en"
-        className = { inter.className } >
+    return (
+        <html lang="en">
         <
         body suppressHydrationWarning >
         <

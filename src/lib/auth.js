@@ -225,15 +225,13 @@ export async function verifyToken(token) {
  * @returns {Promise<string>} JWT token
  */
 export async function setAuthCookie(userData) {
-    // Create payload from user data
-    const payload = {
-        id: userData._id.toString(),
+    // Create token using jsonwebtoken to match verification
+    // generateToken expects a user object with _id, email, and role
+    const token = generateToken({
+        _id: userData._id,
         email: userData.email,
         role: userData.role,
-    };
-
-    // Create token
-    const token = await createToken(payload);
+    });
 
     // Set cookie
     cookies().set("authToken", token, cookieOptions);
@@ -264,10 +262,9 @@ export async function getCurrentUser() {
     }
 
     try {
-        const payload = await verifyToken(authCookie.value);
-        if (!payload || !payload.id) {
-            return null;
-        }
+        // Verify token using jsonwebtoken to avoid signature mismatch
+        const payload = verifyJwtToken(authCookie.value);
+        if (!payload || !payload.id) return null;
 
         // Connect to database
         await db;
