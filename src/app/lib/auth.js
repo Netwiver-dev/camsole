@@ -144,3 +144,19 @@ export async function adminAuth() {
 
     return user;
 }
+// Student authentication middleware: validate JWT and student role
+export async function studentAuth(req) {
+    // use generic authenticate to get user and auth status
+    const result = await authenticate(req);
+    if (!result.authenticated) {
+        return result;
+    }
+    if (result.user.role !== "student") {
+        return {
+            authenticated: false,
+            status: 403,
+            error: "Forbidden: Students only",
+        };
+    }
+    return result;
+}

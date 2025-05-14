@@ -1,6 +1,6 @@
-import db from "../../../../lib/mongodb";
-import { Exam, Attempt, Result, User } from "../../../../lib/models";
-import { studentAuth } from "../../../../lib/auth";
+import db from "../../../lib/mongodb";
+import { Exam, Attempt, Result, User } from "../../../lib/models";
+import { studentAuth } from "../../../lib/auth";
 
 // Get exams for student dashboard
 export async function GET(req) {
